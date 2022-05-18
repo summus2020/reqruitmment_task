@@ -30,7 +30,7 @@ class SearchTableViewCell: UITableViewCell {
         let lbl = UILabel()
         lbl.backgroundColor = UIColor.clear
         lbl.textColor = .black
-        lbl.font = UIFont.boldSystemFont(ofSize: 16)
+        lbl.font = UIFont.boldSystemFont(ofSize: 18)
         lbl.textAlignment = .left
         lbl.sizeToFit()
         lbl.translatesAutoresizingMaskIntoConstraints = false
@@ -48,7 +48,7 @@ class SearchTableViewCell: UITableViewCell {
         let lbl = UILabel()
         lbl.backgroundColor = UIColor.clear
         lbl.textColor = UIColor.gray
-        lbl.font = UIFont.systemFont(ofSize: 12)
+        lbl.font = UIFont.systemFont(ofSize: 16)
         lbl.textAlignment = .left
         lbl.sizeToFit()
         lbl.translatesAutoresizingMaskIntoConstraints = false
@@ -61,6 +61,7 @@ class SearchTableViewCell: UITableViewCell {
         backgroundColor = UIColor(red: 245.0/255.0, green: 245.0/255.0, blue: 245.0/255.0, alpha: 1)
         layer.cornerRadius = 8
         clipsToBounds = true
+        accessoryType = .disclosureIndicator
         
         //add imageView
         personImage.layer.cornerRadius = 8
@@ -85,17 +86,18 @@ class SearchTableViewCell: UITableViewCell {
             personImage.leftAnchor.constraint(equalTo: leftAnchor, constant: 10),
             personImage.widthAnchor.constraint(equalTo: personImage.heightAnchor),
             
-            nameLabel.leftAnchor.constraint(equalTo: personImage.rightAnchor, constant: 12),
+            nameLabel.leftAnchor.constraint(equalTo: personImage.rightAnchor, constant: 18),
             nameLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -10),
             nameLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -40),
             
             starImgView.leftAnchor.constraint(equalTo: nameLabel.leftAnchor, constant: 0),
-            starImgView.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
-            starImgView.widthAnchor.constraint(equalToConstant: 20),
-            starImgView.heightAnchor.constraint(equalToConstant: 20),
+            starImgView.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 3),
+            starImgView.widthAnchor.constraint(equalToConstant: 14),
+            starImgView.heightAnchor.constraint(equalToConstant: 14),
             
-            commitLabel.leftAnchor.constraint(equalTo: starImgView.rightAnchor, constant: 10),
-            commitLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 10),
+            commitLabel.leftAnchor.constraint(equalTo: starImgView.rightAnchor, constant: 6),
+            //commitLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 2),
+            commitLabel.centerYAnchor.constraint(equalTo: starImgView.centerYAnchor, constant: 1),
             commitLabel.rightAnchor.constraint(equalTo: nameLabel.rightAnchor)
             
         ])
