@@ -128,7 +128,6 @@ class FirstViewController: UIViewController, UITableViewDataSource, UITableViewD
             //TODO: handle very lond dict
             if dict != nil{
                 let total = dict!["total_count"] as! Int
-                print("Total items = ", total)
                 if total == 0{
                     let alert = UIAlertController(title: "Info", message: "Nothing found by your request", preferredStyle: .alert)
                     let action = UIAlertAction(title: "Close", style: UIAlertAction.Style.cancel, handler: nil)
@@ -141,7 +140,11 @@ class FirstViewController: UIViewController, UITableViewDataSource, UITableViewD
                         print("error reading items")
                         return
                     }
-                    for item in items{
+                    var sortedItems = items
+                    sortedItems.sort{
+                        (($0 )["stargazers_count"] as! Int) > (($1 )["stargazers_count"] as! Int)
+                    }
+                    for item in sortedItems{
                         var repo = Repo()
                         guard let owner = item["owner"] as? [String:Any] else{
                             //TODO: handle error
