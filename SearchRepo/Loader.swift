@@ -11,11 +11,19 @@ import Foundation
 
 class Loader{
     
+    let baseURL = "https://api.github.com/search/repositories?q="
+    let endURL = "+in%3Aname%2Cdescription&type=Repositories"
     
-    
-    func fetchData(completion: @escaping ([String:Any]?, Error?) -> Void) {
-        let url = URL(string: "http://api.geekdo.com/api/images?ajax=1&gallery=all&nosession=1&objectid=127023&objecttype=thing&pageid=357&showcount=1&size=thumb&sort=recent")!
+    func fetchData(searchString:String, completion: @escaping ([String:Any]?, Error?) -> Void) {
         
+        
+        let trimmedString = searchString.trimmingCharacters(in: .whitespaces)
+        let newString = trimmedString.replacingOccurrences(of: " ", with: "+", options: .literal, range: nil)
+        let escapedString = newString.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
+        let urlString = baseURL + escapedString! + endURL
+        print(urlString)
+        
+        let url = URL(string: urlString)!
         let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
             guard let data = data else { return }
             do {

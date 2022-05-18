@@ -12,7 +12,7 @@ import UIKit
 struct Repo {
     var avatarLink:String = ""
     var name:String = ""
-    var num_commits:Int = 0
+    var num_stars:Int = 0
     
 }
 
@@ -108,10 +108,10 @@ class SearchTableViewCell: UITableViewCell {
         ])
     }
     
-    func setupCell(image: String, name:String, commits:Int) {
+    func setupCell(image: String, name:String, stars:Int) {
         repoAvatar.downloaded(from: image)
         nameLabel.text = name
-        commitLabel.text = String(commits)
+        commitLabel.text = String(stars)
     }
     
     required init?(coder aDecoder: NSCoder) {

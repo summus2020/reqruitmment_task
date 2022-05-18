@@ -26,16 +26,6 @@ class FirstViewController: UIViewController, UITableViewDataSource, UITableViewD
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //TODO: remove it
-        for i in 0...5{
-            var repo = Repo()
-            repo.avatarLink = "http://localhost:8888/avatar.png"
-            repo.name = "John Doe " + String(i)
-            repo.num_commits = 2022
-            data.append(repo)
-        }
-        //----------------
-        
         self.view.backgroundColor = UIColor.white
         safeArea = self.view.layoutMarginsGuide
         
@@ -109,7 +99,7 @@ class FirstViewController: UIViewController, UITableViewDataSource, UITableViewD
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! SearchTableViewCell
         let repo = data[indexPath.row]
-        cell.setupCell(image: repo.avatarLink, name: repo.name, commits: repo.num_commits)
+        cell.setupCell(image: repo.avatarLink, name: repo.name, stars: repo.num_stars)
         
         return cell
     }
@@ -117,10 +107,66 @@ class FirstViewController: UIViewController, UITableViewDataSource, UITableViewD
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let repo = data[indexPath.row]
         goToSecondPage(repo: repo)
+        
     }
     
     func goToSecondPage(repo:Repo){
         self.delegate?.navigateToNextPage(repo: repo)
     }
     
+    // SearchBarDelegate methods
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        print("End editing..")
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+        data.removeAll()
+        tableView.reloadData()
+        let loader = Loader()
+        loader.fetchData(searchString: searchBar.text!) { (dict, err) in
+            //TODO: handle very lond dict
+            if dict != nil{
+                let total = dict!["total_count"] as! Int
+                print("Total items = ", total)
+                if total == 0{
+                    let alert = UIAlertController(title: "Info", message: "Nothing found by your request", preferredStyle: .alert)
+                    let action = UIAlertAction(title: "Close", style: UIAlertAction.Style.cancel, handler: nil)
+                    alert.addAction(action)
+                    self.present(alert, animated: true, completion: nil)
+                }
+                else{
+                    guard let items = dict!["items"] as? [[String:Any]] else {
+                        //TODO: handle error
+                        print("error reading items")
+                        return
+                    }
+                    for item in items{
+                        var repo = Repo()
+                        guard let owner = item["owner"] as? [String:Any] else{
+                            //TODO: handle error
+                            print("error reading owner")
+                            return
+                        }
+                        repo.avatarLink = owner["avatar_url"]! as! String
+                        repo.name = item["name"] as! String
+                        repo.num_stars = item["stargazers_count"] as! Int
+                        
+                        self.data.append(repo)
+                    }
+                    
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                    }
+                }
+            }
+            else{
+                let alert = UIAlertController(title: "Error", message: "Could not load data", preferredStyle: .alert)
+                let action = UIAlertAction(title: "Close", style: UIAlertAction.Style.cancel, handler: nil)
+                alert.addAction(action)
+                self.present(alert, animated: true, completion: nil)
+            }
+        }
+        
+    }
 }
