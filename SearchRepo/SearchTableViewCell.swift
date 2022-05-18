@@ -9,8 +9,8 @@
 import Foundation
 import UIKit
 
-struct Person {
-    var imageLink:String = ""
+struct Repo {
+    var avatarLink:String = ""
     var name:String = ""
     var num_commits:Int = 0
     
@@ -18,7 +18,7 @@ struct Person {
 
 class SearchTableViewCell: UITableViewCell {
     
-    lazy var personImage: UIImageView = {
+    lazy var repoAvatar: UIImageView = {
         let imgView = UIImageView()
         imgView.backgroundColor = UIColor.clear
         imgView.contentMode = .scaleAspectFit
@@ -64,9 +64,9 @@ class SearchTableViewCell: UITableViewCell {
         accessoryType = .disclosureIndicator
         
         //add imageView
-        personImage.layer.cornerRadius = 8
-        personImage.clipsToBounds = true
-        addSubview(personImage)
+        repoAvatar.layer.cornerRadius = 8
+        repoAvatar.clipsToBounds = true
+        addSubview(repoAvatar)
         
         //add name label
         addSubview(nameLabel)
@@ -79,14 +79,19 @@ class SearchTableViewCell: UITableViewCell {
         setupConstrains()
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        self.frame = self.frame.inset(by: UIEdgeInsets(top: 2, left: 0, bottom: 2, right: 0))
+    }
+    
     func setupConstrains(){
         NSLayoutConstraint.activate([
-            personImage.topAnchor.constraint(equalTo: topAnchor, constant: 10),
-            personImage.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10),
-            personImage.leftAnchor.constraint(equalTo: leftAnchor, constant: 10),
-            personImage.widthAnchor.constraint(equalTo: personImage.heightAnchor),
+            repoAvatar.topAnchor.constraint(equalTo: topAnchor, constant: 10),
+            repoAvatar.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10),
+            repoAvatar.leftAnchor.constraint(equalTo: leftAnchor, constant: 10),
+            repoAvatar.widthAnchor.constraint(equalTo: repoAvatar.heightAnchor),
             
-            nameLabel.leftAnchor.constraint(equalTo: personImage.rightAnchor, constant: 18),
+            nameLabel.leftAnchor.constraint(equalTo: repoAvatar.rightAnchor, constant: 18),
             nameLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -10),
             nameLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -40),
             
@@ -104,7 +109,7 @@ class SearchTableViewCell: UITableViewCell {
     }
     
     func setupCell(image: String, name:String, commits:Int) {
-        personImage.downloaded(from: image)
+        repoAvatar.downloaded(from: image)
         nameLabel.text = name
         commitLabel.text = String(commits)
     }

@@ -9,14 +9,14 @@
 import UIKit
 
 protocol FirstViewControllerDelegate: class {
-    func navigateToNextPage(person:Person)
+    func navigateToNextPage(repo:Repo)
 }
 
 class FirstViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
     
     public weak var delegate:FirstViewControllerDelegate?
     let tableView = UITableView()
-    var data:[Person] = []
+    var data:[Repo] = []
     var lbl_search:UILabel!
     var searchBar:UISearchBar!
     var lbl_repo:UILabel!
@@ -27,11 +27,13 @@ class FirstViewController: UIViewController, UITableViewDataSource, UITableViewD
         super.viewDidLoad()
         
         //TODO: remove it
-        var person = Person()
-        person.imageLink = "http://localhost:8888/avatar.png"
-        person.name = "John Doe"
-        person.num_commits = 2022
-        data.append(person)
+        for i in 0...5{
+            var repo = Repo()
+            repo.avatarLink = "http://localhost:8888/avatar.png"
+            repo.name = "John Doe " + String(i)
+            repo.num_commits = 2022
+            data.append(repo)
+        }
         //----------------
         
         self.view.backgroundColor = UIColor.white
@@ -101,24 +103,24 @@ class FirstViewController: UIViewController, UITableViewDataSource, UITableViewD
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 80
+        return 86
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! SearchTableViewCell
-        let person = data[indexPath.row]
-        cell.setupCell(image: person.imageLink, name: person.name, commits: person.num_commits)
+        let repo = data[indexPath.row]
+        cell.setupCell(image: repo.avatarLink, name: repo.name, commits: repo.num_commits)
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let person = data[indexPath.row]
-        goToSecondPage(person: person)
+        let repo = data[indexPath.row]
+        goToSecondPage(repo: repo)
     }
     
-    func goToSecondPage(person:Person){
-        self.delegate?.navigateToNextPage(person: person)
+    func goToSecondPage(repo:Repo){
+        self.delegate?.navigateToNextPage(repo: repo)
     }
     
 }

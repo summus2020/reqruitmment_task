@@ -16,10 +16,26 @@ public protocol SecondViewControllerDelegate: class {
 class SecondViewController: UIViewController {
     
     public weak var delegate:SecondViewControllerDelegate?
-    var person:Person!
+    var repo:Repo!
+    
+    lazy var repoImageView: UIImageView = {
+        let imgView = UIImageView()
+        imgView.backgroundColor = UIColor.clear
+        imgView.contentMode = .scaleAspectFit
+        imgView.translatesAutoresizingMaskIntoConstraints = false
+        return imgView
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad();
+        
+        view.addSubview(repoImageView)
+        //repoImageView.downloaded(from: <#T##String#>)
+        
+        
+    }
+    
+    func estupConstraints(){
         
     }
     
