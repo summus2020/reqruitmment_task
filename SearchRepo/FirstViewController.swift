@@ -16,14 +16,23 @@ class FirstViewController: UIViewController, UITableViewDataSource, UITableViewD
     
     public weak var delegate:FirstViewControllerDelegate?
     let tableView = UITableView()
-    var data:[AnyObject] = []
+    var data:[Person] = []
     var lbl_search:UILabel!
     var searchBar:UISearchBar!
     var lbl_repo:UILabel!
     var safeArea: UILayoutGuide!
+    let cellIdentifier = "cellIdentifier"
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //TODO: remove it
+        var person = Person()
+        person.imageLink = "http://localhost:8888/avatar.png"
+        person.name = "John Doe"
+        person.num_commits = 2022
+        data.append(person)
+        //----------------
         
         self.view.backgroundColor = UIColor.white
         safeArea = self.view.layoutMarginsGuide
@@ -52,8 +61,14 @@ class FirstViewController: UIViewController, UITableViewDataSource, UITableViewD
         self.view.addSubview(self.tableView)
         self.setupConstraints()
         
+        setupTableView()
+        
     }
-    
+    func setupTableView(){
+        tableView.register(SearchTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
+        tableView.delegate = self
+        tableView.dataSource = self
+    }
     
     func setupConstraints(){
         // constraints for label "Search"
@@ -81,16 +96,17 @@ class FirstViewController: UIViewController, UITableViewDataSource, UITableViewD
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0{
-            return 1
-        }
-        else{
-            return data.count
-        }
+        return data.count
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cellIdentifier", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! SearchTableViewCell
+        let person = data[indexPath.row]
+        cell.setupCell(image: person.imageLink, name: person.name, commits: person.num_commits)
         
         return cell
     }
