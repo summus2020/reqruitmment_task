@@ -16,6 +16,7 @@ public protocol SecondViewControllerDelegate: class {
 class SecondViewController: UIViewController {
     
     public weak var delegate:SecondViewControllerDelegate?
+    var person:Person!
     
     override func viewDidLoad() {
         super.viewDidLoad();

@@ -8,8 +8,8 @@
 
 import UIKit
 
-public protocol FirstViewControllerDelegate: class {
-    func navigateToNextPage()
+protocol FirstViewControllerDelegate: class {
+    func navigateToNextPage(person:Person)
 }
 
 class FirstViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
@@ -112,8 +112,13 @@ class FirstViewController: UIViewController, UITableViewDataSource, UITableViewD
         return cell
     }
     
-    func goToSecondPage(){
-        self.delegate?.navigateToNextPage()
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let person = data[indexPath.row]
+        goToSecondPage(person: person)
+    }
+    
+    func goToSecondPage(person:Person){
+        self.delegate?.navigateToNextPage(person: person)
     }
     
 }

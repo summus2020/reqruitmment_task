@@ -38,9 +38,10 @@ class FirstCoordinator: Coordinator {
 }
 extension FirstCoordinator:FirstViewControllerDelegate{
     
-    func navigateToNextPage(){
+    func navigateToNextPage(person:Person){
         let secondCoordinator = SecondCoordinator(navigationController: navigationController)
         secondCoordinator.delegate = self
+        secondCoordinator.person = person
         childCoordinators.append(secondCoordinator)
         secondCoordinator.start()
     }
@@ -62,6 +63,7 @@ protocol BackToFirstViewControllerDelegate: class {
 class SecondCoordinator: Coordinator {
     
     var childCoordinators: [Coordinator] = []
+    var person:Person?
     
     unowned let navigationController:UINavigationController
     
@@ -74,6 +76,7 @@ class SecondCoordinator: Coordinator {
     
     func start() {
         let secondViewController : SecondViewController = SecondViewController()
+        secondViewController.person = person!
         secondViewController.delegate = self
         self.navigationController.pushViewController(secondViewController, animated: true)
     }
