@@ -19,7 +19,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = UINavigationController()
+        // set up navigation controller
         (window?.rootViewController as! UINavigationController).navigationBar.isHidden = true
+        (window?.rootViewController as! UINavigationController).navigationBar.setBackgroundImage(UIImage(), for: .default)
+        (window?.rootViewController as! UINavigationController).navigationBar.shadowImage = UIImage()
+        (window?.rootViewController as! UINavigationController).navigationBar.isTranslucent = true
+        (window?.rootViewController as! UINavigationController).view.backgroundColor = .clear
+        (window?.rootViewController as! UINavigationController).navigationBar.tintColor = UIColor.white
         
         firstCoordinator = FirstCoordinator(navigationController: window?.rootViewController! as! UINavigationController)
         firstCoordinator?.start()

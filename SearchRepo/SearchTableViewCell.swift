@@ -13,6 +13,9 @@ struct Repo {
     var avatarLink:String = ""
     var name:String = ""
     var num_stars:Int = 0
+    var owner:String = ""
+    var repo_name:String = ""
+    var html_url:String = ""
     
 }
 

@@ -18,10 +18,10 @@ class SecondViewController: UIViewController {
     public weak var delegate:SecondViewControllerDelegate?
     var repo:Repo!
     
-    lazy var repoImageView: UIImageView = {
+    lazy var avatarImageView: UIImageView = {
         let imgView = UIImageView()
         imgView.backgroundColor = UIColor.clear
-        imgView.contentMode = .scaleAspectFit
+        imgView.layer.masksToBounds = true
         imgView.translatesAutoresizingMaskIntoConstraints = false
         return imgView
     }()
@@ -29,17 +29,30 @@ class SecondViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad();
         
-        view.addSubview(repoImageView)
-        //repoImageView.downloaded(from: <#T##String#>)
+        view.backgroundColor = UIColor.white
         
+        view.addSubview(avatarImageView)
+        avatarImageView.downloaded(from: repo.avatarLink, contentMode: .scaleAspectFill)
         
+        setupConstraints()
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.navigationBar.isHidden = false
+        self.navigationController!.navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(navigateToFirstPage))
     }
     
-    func estupConstraints(){
-        
+    func setupConstraints(){
+        let h = view.frame.size.height/3
+        NSLayoutConstraint.activate([
+            avatarImageView.topAnchor.constraint(equalTo: view.topAnchor),
+            avatarImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            avatarImageView.widthAnchor.constraint(equalTo: view.widthAnchor),
+            avatarImageView.bottomAnchor.constraint(equalTo: view.topAnchor, constant: h)
+        ])
     }
     
-    func navigateToFirstPage(){
+    @objc func navigateToFirstPage(){
         self.delegate?.navigateToFirstPage()
     }
 }
