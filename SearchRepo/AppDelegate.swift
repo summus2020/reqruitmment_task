@@ -12,15 +12,18 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    var firstCoordinator:FirstCoordinator?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
         window = UIWindow(frame: UIScreen.main.bounds)
-        let controller = FirstViewController()
-        let navController = UINavigationController(rootViewController: controller)
-        window?.rootViewController = navController
+        window?.rootViewController = UINavigationController()
+        (window?.rootViewController as! UINavigationController).navigationBar.isHidden = true
+        
+        firstCoordinator = FirstCoordinator(navigationController: window?.rootViewController! as! UINavigationController)
+        firstCoordinator?.start()
+        
         window?.makeKeyAndVisible()
         
         return true
