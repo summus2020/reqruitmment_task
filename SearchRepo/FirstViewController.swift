@@ -56,11 +56,17 @@ class FirstViewController: UIViewController, UITableViewDataSource, UITableViewD
         setupTableView()
         
     }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.navigationBar.isHidden = true
+        tableView.deselectAllRows(animated: false)
+    }
     func setupTableView(){
         tableView.register(SearchTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
         tableView.delegate = self
         tableView.dataSource = self
         tableView.separatorStyle = .none
+        
     }
     
     func setupConstraints(){
@@ -106,7 +112,14 @@ class FirstViewController: UIViewController, UITableViewDataSource, UITableViewD
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let repo = data[indexPath.row]
-        goToSecondPage(repo: repo)
+        //prevent row size change after return to this screen
+        tableView.deselectRow(at: indexPath, animated: true)
+        tableView.reloadRows(at: [indexPath], with: .automatic)
+        //add timer to wait till cell animation complete
+        _ = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: false) { (timer) in
+            self.goToSecondPage(repo: repo)
+        }
+        
         
     }
     
@@ -115,24 +128,41 @@ class FirstViewController: UIViewController, UITableViewDataSource, UITableViewD
     }
     
     // SearchBarDelegate methods
-    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        print("End editing..")
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText.isEmpty{
+            if data.count > 0{
+                data.removeAll()
+                tableView.reloadData()
+            }
+        }
     }
-    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
+        let loader = Loader()
+        let trimmedString:String = searchBar.text!.trimmingCharacters(in: .whitespaces)
+        if trimmedString == ""{
+            let alert = UIAlertController(title: "Error", message: "Search request is empty. Enter your text to search please", preferredStyle: .alert)
+            let action = UIAlertAction(title: "Close", style: UIAlertAction.Style.cancel, handler: nil)
+            alert.addAction(action)
+            self.present(alert, animated: true, completion: nil)
+            return
+        }
         data.removeAll()
         tableView.reloadData()
-        let loader = Loader()
-        loader.fetchData(searchString: searchBar.text!) { (dict, err) in
-            //TODO: handle very lond dict
+        let newString = trimmedString.replacingOccurrences(of: " ", with: "+", options: .literal, range: nil)
+        let escapedString = newString.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
+        let urlString = loader.baseURL_search + escapedString! + loader.endURL_search
+        
+        loader.fetchRepoListData(urlString: urlString) { (dict, err) in
             if dict != nil{
                 let total = dict!["total_count"] as! Int
                 if total == 0{
                     let alert = UIAlertController(title: "Info", message: "Nothing found by your request", preferredStyle: .alert)
                     let action = UIAlertAction(title: "Close", style: UIAlertAction.Style.cancel, handler: nil)
                     alert.addAction(action)
-                    self.present(alert, animated: true, completion: nil)
+                    DispatchQueue.main.async {
+                        self.present(alert, animated: true, completion: nil)
+                    }
                 }
                 else{
                     guard let items = dict!["items"] as? [[String:Any]] else {
@@ -167,7 +197,9 @@ class FirstViewController: UIViewController, UITableViewDataSource, UITableViewD
                 let alert = UIAlertController(title: "Error", message: "Could not load data", preferredStyle: .alert)
                 let action = UIAlertAction(title: "Close", style: UIAlertAction.Style.cancel, handler: nil)
                 alert.addAction(action)
-                self.present(alert, animated: true, completion: nil)
+                DispatchQueue.main.async {
+                    self.present(alert, animated: true, completion: nil)
+                }
             }
         }
         

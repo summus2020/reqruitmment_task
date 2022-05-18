@@ -29,3 +29,10 @@ extension UIImageView {
         downloaded(from: url, contentMode: mode)
     }
 }
+
+extension UITableView {
+    func deselectAllRows(animated: Bool) {
+        guard let selectedRows = indexPathsForSelectedRows else { return }
+        for indexPath in selectedRows { deselectRow(at: indexPath, animated: animated) }
+    }
+}
