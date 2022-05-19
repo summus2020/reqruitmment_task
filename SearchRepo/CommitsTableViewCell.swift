@@ -17,7 +17,7 @@ class CommitsTableViewCell: UITableViewCell {
         let lbl = UILabel()
         lbl.backgroundColor = UIColor.init(red: 245/255, green: 245/255, blue: 245/255, alpha: 1)
         lbl.textColor = .black
-        lbl.font = UIFont.boldSystemFont(ofSize: 20)
+        lbl.font = UIFont.systemFont(ofSize: 20)
         lbl.textAlignment = .center
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
@@ -27,7 +27,7 @@ class CommitsTableViewCell: UITableViewCell {
         let lbl = UILabel()
         lbl.backgroundColor = UIColor.clear
         lbl.textColor = UIColor.init(red: 35/255, green: 134/255, blue: 252/255, alpha: 1)
-        lbl.font = UIFont.systemFont(ofSize: 13)
+        lbl.font = UIFont.systemFont(ofSize: 16)
         lbl.textAlignment = .left
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
@@ -37,7 +37,7 @@ class CommitsTableViewCell: UITableViewCell {
         let lbl = UILabel()
         lbl.backgroundColor = UIColor.clear
         lbl.textColor = .black
-        lbl.font = UIFont.systemFont(ofSize: 15)
+        lbl.font = UIFont.systemFont(ofSize: 18)
         lbl.textAlignment = .left
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
@@ -47,7 +47,7 @@ class CommitsTableViewCell: UITableViewCell {
         let lbl = UILabel()
         lbl.backgroundColor = UIColor.clear
         lbl.textColor = UIColor.gray
-        lbl.font = UIFont.systemFont(ofSize: 15)
+        lbl.font = UIFont.systemFont(ofSize: 18)
         lbl.textAlignment = .left
         lbl.lineBreakMode = NSLineBreakMode.byWordWrapping
         lbl.numberOfLines = 0
@@ -81,11 +81,12 @@ class CommitsTableViewCell: UITableViewCell {
         lbl_description.sizeToFit()
         
         setupConstrants()
+        layoutSubviews()
     }
     
     func setupConstrants(){
         NSLayoutConstraint.activate([
-            lbl_num.topAnchor.constraint(equalTo: topAnchor, constant: 14),
+            lbl_num.topAnchor.constraint(equalTo: topAnchor, constant: 26),
             lbl_num.leftAnchor.constraint(equalTo: leftAnchor, constant: 20),
             lbl_num.widthAnchor.constraint(equalToConstant: indxHeight),
             lbl_num.heightAnchor.constraint(equalToConstant: indxHeight),
@@ -101,7 +102,7 @@ class CommitsTableViewCell: UITableViewCell {
             
             lbl_description.leftAnchor.constraint(equalTo: lbl_num.rightAnchor, constant: 18),
             lbl_description.topAnchor.constraint(equalTo: lbl_email.bottomAnchor, constant: 2),
-            lbl_description.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5),
+            lbl_description.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10),
             lbl_description.rightAnchor.constraint(equalTo: rightAnchor, constant: -20)
             
         ])

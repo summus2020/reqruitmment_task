@@ -86,7 +86,6 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     var lbl_title:UILabel = {
         let lbl = UILabel()
-        lbl.text = "Repo Title"
         lbl.backgroundColor = UIColor.clear
         lbl.textColor = UIColor.black
         lbl.font = UIFont.systemFont(ofSize: 20)
@@ -142,6 +141,7 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
         view.addSubview(but_online)
         but_online.addTarget(self, action: #selector(on_but_online_clicked), for: UIControl.Event.touchDown)
         
+        lbl_title.text = self.repo.name
         view.addSubview(lbl_title)
         view.addSubview(lbl_history)
         
