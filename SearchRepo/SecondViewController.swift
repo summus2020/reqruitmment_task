@@ -34,7 +34,7 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     var but_online:UIButton = {
         let but = UIButton(type: UIButton.ButtonType.system)
-        but.backgroundColor = UIColor.init(red: 245/255, green: 245/255, blue: 245/255, alpha: 1)
+        but.backgroundColor = UIColor.init(red: 242/255, green: 242/255, blue: 247/255, alpha: 1)
         but.setTitle("VIEW ONLINE", for: .normal)
         but.titleLabel?.font = UIFont.systemFont(ofSize: 15)
         but.layer.cornerRadius = 19
@@ -46,7 +46,7 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
     var lbl_by:UILabel = {
         let lbl = UILabel()
         lbl.backgroundColor = UIColor.clear
-        lbl.textColor = UIColor.init(red: 1, green: 1, blue: 1, alpha: 0.5)
+        lbl.textColor = UIColor.init(red: 1, green: 1, blue: 1, alpha: 0.75)
         lbl.font = UIFont.boldSystemFont(ofSize: 17)
         lbl.textAlignment = .left
         lbl.text = "REPO BY"
@@ -76,7 +76,7 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
     var lbl_stars:UILabel = {
         let lbl = UILabel()
         lbl.backgroundColor = UIColor.clear
-        lbl.textColor = UIColor.init(red: 1, green: 1, blue: 1, alpha: 0.5)
+        lbl.textColor = UIColor.init(red: 1, green: 1, blue: 1, alpha: 0.75)
         lbl.font = UIFont.systemFont(ofSize: 16)
         lbl.textAlignment = .left
         lbl.sizeToFit()
@@ -86,9 +86,10 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     var lbl_title:UILabel = {
         let lbl = UILabel()
+        lbl.text = "Repo Title"
         lbl.backgroundColor = UIColor.clear
         lbl.textColor = UIColor.black
-        lbl.font = UIFont.boldSystemFont(ofSize: 28)
+        lbl.font = UIFont.systemFont(ofSize: 20)
         lbl.textAlignment = .left
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
@@ -98,12 +99,24 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let lbl = UILabel()
         lbl.backgroundColor = UIColor.clear
         lbl.textColor = UIColor.black
-        lbl.font = UIFont.boldSystemFont(ofSize: 30)
+        lbl.font = UIFont.boldSystemFont(ofSize: 24)
         lbl.textAlignment = .left
         lbl.text = "Commits History"
         lbl.sizeToFit()
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
+    }()
+    
+    var but_share:UIButton = {
+        let but = UIButton(type: UIButton.ButtonType.system)
+        but.setImage(UIImage(named: "share"), for: UIControl.State.normal)
+        but.setTitle("Share Repo", for: UIControl.State.normal)
+        but.titleLabel?.font = UIFont.systemFont(ofSize: 20)
+        but.backgroundColor = UIColor.init(red: 242/255, green: 242/255, blue: 247/255, alpha: 1)
+        but.layer.cornerRadius = 12
+        but.clipsToBounds = true
+        but.translatesAutoresizingMaskIntoConstraints = false
+        return but
     }()
     
     override func viewDidLoad() {
@@ -117,7 +130,7 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
         view.addSubview(lbl_by)
         
         view.addSubview(lbl_name)
-        lbl_name.text = "Repo Author"//repo.owner
+        lbl_name.text = "Repo Author game"// repo.owner
         lbl_name.sizeToFit()
         
         view.addSubview(starImageView)
@@ -126,25 +139,41 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
         lbl_stars.text = "Number of Stars(" + String(repo.num_stars) + ")"
         lbl_stars.sizeToFit()
         
-        
-        
         view.addSubview(but_online)
         but_online.addTarget(self, action: #selector(on_but_online_clicked), for: UIControl.Event.touchDown)
         
+        view.addSubview(lbl_title)
+        view.addSubview(lbl_history)
+        
+        view.addSubview(but_share)
+        but_share.addTarget(self, action: #selector(onButShareClicked), for: UIControl.Event.touchDown)
+        
         setupConstraints()
+        view.layoutSubviews()
+        setupTableView()
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.isHidden = false
         self.navigationController!.navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(navigateToFirstPage))
-        
         setNeedsStatusBarAppearanceUpdate()
         commits = []
     }
     override var preferredStatusBarStyle: UIStatusBarStyle{
         return UIStatusBarStyle.lightContent
     }
-    
+    func setupTableView(){
+        let x = left_padding
+        let y = lbl_history.frame.origin.y + lbl_history.frame.size.height + left_padding
+        let w = view.frame.width - (left_padding*2)
+        let h = but_share.frame.origin.y - left_padding - y
+        let rect = CGRect(x: x, y: y, width: w, height: h)
+        
+        tableView = UITableView(frame: rect, style: .plain)
+        tableView.delegate = self
+        tableView.dataSource = self
+        view.addSubview(tableView)
+    }
     func setupConstraints(){
         let h = view.frame.size.height/3
         NSLayoutConstraint.activate([
@@ -169,13 +198,29 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
             
             lbl_name.leftAnchor.constraint(equalTo: view.leftAnchor, constant: left_padding),
             lbl_name.bottomAnchor.constraint(equalTo: lbl_stars.topAnchor, constant: -left_padding/2),
-            lbl_name.heightAnchor.constraint(equalToConstant: 28),
+            lbl_name.heightAnchor.constraint(equalToConstant: 32),
             lbl_name.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -left_padding),
             
             lbl_by.leftAnchor.constraint(equalTo: view.leftAnchor, constant: left_padding),
             lbl_by.bottomAnchor.constraint(equalTo: lbl_name.topAnchor, constant: -left_padding/2),
             lbl_by.widthAnchor.constraint(equalToConstant: lbl_by.frame.size.width),
-            lbl_by.heightAnchor.constraint(equalToConstant: lbl_by.frame.size.height)
+            lbl_by.heightAnchor.constraint(equalToConstant: lbl_by.frame.size.height),
+            
+            lbl_title.leftAnchor.constraint(equalTo: view.leftAnchor, constant: left_padding),
+            lbl_title.centerYAnchor.constraint(equalTo: but_online.centerYAnchor),
+            lbl_title.rightAnchor.constraint(equalTo: but_online.leftAnchor, constant: -left_padding),
+            lbl_title.heightAnchor.constraint(equalToConstant: 30),
+            
+            lbl_history.leftAnchor.constraint(equalTo: view.leftAnchor, constant: left_padding),
+            lbl_history.topAnchor.constraint(equalTo: lbl_title.bottomAnchor, constant: 36),
+            lbl_history.widthAnchor.constraint(equalToConstant: lbl_history.frame.size.width),
+            lbl_history.heightAnchor.constraint(equalToConstant: lbl_history.frame.size.height),
+            
+            but_share.leftAnchor.constraint(equalTo: view.leftAnchor, constant: left_padding),
+            but_share.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -left_padding),
+            but_share.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -left_padding*2),
+            but_share.heightAnchor.constraint(equalToConstant: 56)
+            
         ])
     }
     
@@ -223,5 +268,10 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
         loader.fetchRepoListData(urlString: urlString) { (data, err) in
             //create commits array
         }
+    }
+    
+    // button chare click listener
+    @objc func onButShareClicked(){
+        
     }
 }
