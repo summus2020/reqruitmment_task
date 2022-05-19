@@ -8,13 +8,14 @@
 
 import Foundation
 import UIKit
+import MessageUI
 
 public protocol SecondViewControllerDelegate: class {
     func navigateToFirstPage()
 }
 
 
-class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, MFMailComposeViewControllerDelegate {
     
     public weak var delegate:SecondViewControllerDelegate?
     var repo:Repo!
@@ -164,9 +165,9 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
         return UIStatusBarStyle.lightContent
     }
     func setupTableView(){
-        let x = left_padding
+        let x:CGFloat = 0.0
         let y = lbl_history.frame.origin.y + lbl_history.frame.size.height + left_padding
-        let w = view.frame.width - (left_padding*2)
+        let w = view.frame.width
         let h = but_share.frame.origin.y - left_padding - y
         let rect = CGRect(x: x, y: y, width: w, height: h)
         
@@ -237,7 +238,7 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
             self.but_online.backgroundColor = UIColor.lightGray
         }) { (complete) in
             UIView.animate(withDuration: 0.25, animations: {
-                self.but_online.backgroundColor = UIColor.init(red: 245/255, green: 245/255, blue: 245/255, alpha: 1)
+                self.but_online.backgroundColor = UIColor.init(red: 242/255, green: 242/255, blue: 247/255, alpha: 1)
             }, completion: { (complete) in
                 guard let url = URL(string: self.repo.html_url) else { return }
                 UIApplication.shared.open(url)
@@ -266,44 +267,54 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
         return cell
     }
     
-    // load Repository info
+    // load Repository info - unused function. All neede information already loaded with "search" request
     func loadRepo(){
-        let urlString = loader.baseURL_repo + "/" + repo.owner + "/" + repo.name
+        let urlString = loader.baseURL_repo + repo.owner + "/" + repo.name
         loader.fetchRepoData(urlString: urlString) { (data, err) in
             // load repository info
+            if data != nil{
+                //data loaded
+            }
+            else{
+                //error
+                if err != nil{
+                    print(err?.localizedDescription as Any)
+                }
+            }
         }
     }
     
     // load commits
     func loadCommits(){
         let urlString = self.loader.baseURL_repo + self.repo.owner + "/" + self.repo.name + "/commits"
-        print(urlString)
-        self.loader.fetchCommitsData(urlString: urlString) { (data, err) in
-            //create commits array
-            print("data loaded...")
-            if data != nil{
-                let arr = data as! [[String:Any]]
-                print("Loaded commits has ", data!.count, " items")
-                for i in 0...2{
-                    var commit = Commit()
-                    let item = arr[i]["commit"] as! [String:Any]
-                    let author = item["author"] as! [String:String]
-                    commit.author = author["name"]!
-                    commit.email = author["email"]!
-                    commit.description = item["message"] as! String
-                    
-                    self.commits.append(commit)
+        DispatchQueue.global(qos: .background).async {
+            self.loader.fetchCommitsData(urlString: urlString) { (data, err) in
+                //create commits array
+                print("data loaded...")
+                if data != nil{
+                    let arr = data as! [[String:Any]]
+                    print("Loaded commits has ", data!.count, " items")
+                    for i in 0...2{
+                        var commit = Commit()
+                        let item = arr[i]["commit"] as! [String:Any]
+                        let author = item["author"] as! [String:String]
+                        commit.author = author["name"]!
+                        commit.email = author["email"]!
+                        commit.description = item["message"] as! String
+                        
+                        self.commits.append(commit)
+                    }
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                    }
                 }
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
-            }
-            else{
-                let alert = UIAlertController(title: "Error", message: "Could not load data", preferredStyle: .alert)
-                let action = UIAlertAction(title: "Close", style: UIAlertAction.Style.cancel, handler: nil)
-                alert.addAction(action)
-                DispatchQueue.main.async {
-                    self.present(alert, animated: true, completion: nil)
+                else{
+                    let alert = UIAlertController(title: "Error", message: "Could not load data", preferredStyle: .alert)
+                    let action = UIAlertAction(title: "Close", style: UIAlertAction.Style.cancel, handler: nil)
+                    alert.addAction(action)
+                    DispatchQueue.main.async {
+                        self.present(alert, animated: true, completion: nil)
+                    }
                 }
             }
         }
@@ -311,6 +322,48 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     // button chare click listener
     @objc func onButShareClicked(){
-        
+        // animate background color
+        UIView.animate(withDuration: 0.15, animations: {
+            self.but_share.backgroundColor = UIColor.lightGray
+        }) { (complete) in
+            UIView.animate(withDuration: 0.15, animations: {
+                self.but_share.backgroundColor = UIColor.init(red: 242/255, green: 242/255, blue: 247/255, alpha: 1)
+            }, completion: { (complete) in
+                let controller = UIAlertController(title: "Share", message: "Share the Repo with your friends", preferredStyle: .actionSheet)
+                let action = UIAlertAction(title: "Share via email", style: UIAlertAction.Style.default) { (action) in
+                    // Send email
+                    self.sendEmail()
+                }
+                let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+                controller.addAction(action)
+                controller.addAction(cancel)
+                self.present(controller, animated: true, completion: nil)
+            })
+        }
+    }
+    
+    func sendEmail(){
+        if MFMailComposeViewController.canSendMail(){
+            // service available
+            print("can send email")
+            let composeVC = MFMailComposeViewController()
+            composeVC.mailComposeDelegate = self
+            
+            // Configure the fields of the interface.
+            composeVC.setToRecipients([])
+            composeVC.setSubject("Repository " + repo.name)
+            composeVC.setMessageBody("Hi. Take a look at the repository:"+repo.name+"\n"+repo.html_url, isHTML: false)
+            
+            // Present the view controller modally.
+            self.present(composeVC, animated: true, completion: nil)
+        }
+        else{
+            let alert = UIAlertController(title: "Error", message: "Could not send email. Service unavailable", preferredStyle: .alert)
+            let action = UIAlertAction(title: "Close", style: UIAlertAction.Style.cancel, handler: nil)
+            alert.addAction(action)
+            DispatchQueue.main.async {
+                self.present(alert, animated: true, completion: nil)
+            }
+        }
     }
 }

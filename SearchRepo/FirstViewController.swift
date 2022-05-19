@@ -171,7 +171,9 @@ class FirstViewController: UIViewController, UITableViewDataSource, UITableViewD
                 else{
                     guard let items = dict!["items"] as? [[String:Any]] else {
                         //TODO: handle error
-                        print("error reading items")
+                        if err != nil{
+                            print(err?.localizedDescription as Any)
+                        }
                         return
                     }
                     var sortedItems = items

@@ -98,10 +98,9 @@ class CommitsTableViewCell: UITableViewCell {
             lbl_email.leftAnchor.constraint(equalTo: lbl_num.rightAnchor, constant: 18),
             lbl_email.topAnchor.constraint(equalTo: lbl_name.bottomAnchor, constant: 3),
             lbl_email.rightAnchor.constraint(equalTo: rightAnchor, constant: -20),
-            lbl_email.heightAnchor.constraint(equalToConstant: 20),
             
             lbl_description.leftAnchor.constraint(equalTo: lbl_num.rightAnchor, constant: 18),
-            lbl_description.topAnchor.constraint(equalTo: lbl_email.bottomAnchor, constant: 2),
+            lbl_description.topAnchor.constraint(equalTo: lbl_email.bottomAnchor, constant: 6),
             lbl_description.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10),
             lbl_description.rightAnchor.constraint(equalTo: rightAnchor, constant: -20)
             
