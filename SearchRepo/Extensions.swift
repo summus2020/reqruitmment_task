@@ -36,3 +36,9 @@ extension UITableView {
         for indexPath in selectedRows { deselectRow(at: indexPath, animated: animated) }
     }
 }
+
+extension UINavigationController {
+    open override var preferredStatusBarStyle: UIStatusBarStyle {
+        return topViewController?.preferredStatusBarStyle ?? .default
+    }
+}

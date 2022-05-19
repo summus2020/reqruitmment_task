@@ -16,6 +16,8 @@
 		FA3347A02834FBB6009EEB6C /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA33479E2834FBB5009EEB6C /* SecondViewController.swift */; };
 		FA3347A7283509A5009EEB6C /* SearchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3347A5283509A4009EEB6C /* SearchTableViewCell.swift */; };
 		FA3347A8283509A5009EEB6C /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3347A6283509A5009EEB6C /* Extensions.swift */; };
+		FA362E8D28361E5F00FDEE46 /* CommitsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA362E8C28361E5F00FDEE46 /* CommitsTableViewCell.swift */; };
+		FA362E8F28361EDB00FDEE46 /* Structures.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA362E8E28361EDB00FDEE46 /* Structures.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +32,8 @@
 		FA33479E2834FBB5009EEB6C /* SecondViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
 		FA3347A5283509A4009EEB6C /* SearchTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchTableViewCell.swift; sourceTree = "<group>"; };
 		FA3347A6283509A5009EEB6C /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		FA362E8C28361E5F00FDEE46 /* CommitsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommitsTableViewCell.swift; sourceTree = "<group>"; };
+		FA362E8E28361EDB00FDEE46 /* Structures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Structures.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,12 +67,14 @@
 			isa = PBXGroup;
 			children = (
 				FA3347892834D53F009EEB6C /* AppDelegate.swift */,
-				FA33478B2834D53F009EEB6C /* FirstViewController.swift */,
 				FA33479D2834FBB5009EEB6C /* Coordinator.swift */,
+				FA33478B2834D53F009EEB6C /* FirstViewController.swift */,
 				FA33479E2834FBB5009EEB6C /* SecondViewController.swift */,
 				FA3347A5283509A4009EEB6C /* SearchTableViewCell.swift */,
+				FA362E8C28361E5F00FDEE46 /* CommitsTableViewCell.swift */,
 				FA29AEF728353374000F1A9D /* Loader.swift */,
 				FA3347A6283509A5009EEB6C /* Extensions.swift */,
+				FA362E8E28361EDB00FDEE46 /* Structures.swift */,
 				FA3347902834D544009EEB6C /* Assets.xcassets */,
 				FA3347922834D544009EEB6C /* LaunchScreen.storyboard */,
 				FA3347952834D544009EEB6C /* Info.plist */,
@@ -147,9 +153,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA3347A02834FBB6009EEB6C /* SecondViewController.swift in Sources */,
+				FA362E8F28361EDB00FDEE46 /* Structures.swift in Sources */,
 				FA3347A8283509A5009EEB6C /* Extensions.swift in Sources */,
 				FA33478C2834D53F009EEB6C /* FirstViewController.swift in Sources */,
 				FA33478A2834D53F009EEB6C /* AppDelegate.swift in Sources */,
+				FA362E8D28361E5F00FDEE46 /* CommitsTableViewCell.swift in Sources */,
 				FA33479F2834FBB6009EEB6C /* Coordinator.swift in Sources */,
 				FA29AEF828353374000F1A9D /* Loader.swift in Sources */,
 				FA3347A7283509A5009EEB6C /* SearchTableViewCell.swift in Sources */,

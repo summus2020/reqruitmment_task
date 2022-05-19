@@ -60,6 +60,10 @@ class FirstViewController: UIViewController, UITableViewDataSource, UITableViewD
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.isHidden = true
         tableView.deselectAllRows(animated: false)
+        setNeedsStatusBarAppearanceUpdate()
+    }
+    override var preferredStatusBarStyle: UIStatusBarStyle{
+        return UIStatusBarStyle.default
     }
     func setupTableView(){
         tableView.register(SearchTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
@@ -184,6 +188,7 @@ class FirstViewController: UIViewController, UITableViewDataSource, UITableViewD
                         repo.avatarLink = owner["avatar_url"]! as! String
                         repo.name = item["name"] as! String
                         repo.num_stars = item["stargazers_count"] as! Int
+                        repo.owner = owner["login"] as! String
                         
                         self.data.append(repo)
                     }
