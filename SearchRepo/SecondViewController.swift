@@ -239,8 +239,8 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
             UIView.animate(withDuration: 0.25, animations: {
                 self.but_online.backgroundColor = UIColor.init(red: 245/255, green: 245/255, blue: 245/255, alpha: 1)
             }, completion: { (complete) in
-                //TODO: navigate to github repo page
-                print("button pressed")
+                guard let url = URL(string: self.repo.html_url) else { return }
+                UIApplication.shared.open(url)
             })
         }
     }

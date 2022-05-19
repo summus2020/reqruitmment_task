@@ -189,6 +189,7 @@ class FirstViewController: UIViewController, UITableViewDataSource, UITableViewD
                         repo.name = item["name"] as! String
                         repo.num_stars = item["stargazers_count"] as! Int
                         repo.owner = owner["login"] as! String
+                        repo.html_url = item["html_url"] as! String
                         
                         self.data.append(repo)
                     }
