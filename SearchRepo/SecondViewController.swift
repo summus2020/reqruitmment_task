@@ -130,7 +130,7 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
         view.addSubview(lbl_by)
         
         view.addSubview(lbl_name)
-        lbl_name.text = "Repo Author game"// repo.owner
+        lbl_name.text = repo.owner
         lbl_name.sizeToFit()
         
         view.addSubview(starImageView)
@@ -158,6 +158,7 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
         self.navigationController!.navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(navigateToFirstPage))
         setNeedsStatusBarAppearanceUpdate()
         commits = []
+        loadCommits()
     }
     override var preferredStatusBarStyle: UIStatusBarStyle{
         return UIStatusBarStyle.lightContent
@@ -172,6 +173,7 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
         tableView = UITableView(frame: rect, style: .plain)
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.register(CommitsTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
         view.addSubview(tableView)
     }
     func setupConstraints(){
@@ -247,9 +249,19 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return commits.count
     }
+    // make all rows unselectable
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        return nil
+    }
+    //make all rows unhighlighted
+    func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+        return false
+    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! CommitsTableViewCell
+        let commit = commits[indexPath.row]
+        cell.setupCell(indx: indexPath.row+1, name: commit.author, email: commit.email, descr: commit.description)
         
         return cell
     }
@@ -257,16 +269,43 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
     // load Repository info
     func loadRepo(){
         let urlString = loader.baseURL_repo + "/" + repo.owner + "/" + repo.name
-        loader.fetchRepoListData(urlString: urlString) { (data, err) in
+        loader.fetchRepoData(urlString: urlString) { (data, err) in
             // load repository info
         }
     }
     
     // load commits
     func loadCommits(){
-        let urlString = loader.baseURL_repo + "/" + repo.owner + "/" + repo.name + "/commits"
-        loader.fetchRepoListData(urlString: urlString) { (data, err) in
+        let urlString = self.loader.baseURL_repo + self.repo.owner + "/" + self.repo.name + "/commits"
+        print(urlString)
+        self.loader.fetchCommitsData(urlString: urlString) { (data, err) in
             //create commits array
+            print("data loaded...")
+            if data != nil{
+                let arr = data as! [[String:Any]]
+                print("Loaded commits has ", data!.count, " items")
+                for i in 0...2{
+                    var commit = Commit()
+                    let item = arr[i]["commit"] as! [String:Any]
+                    let author = item["author"] as! [String:String]
+                    commit.author = author["name"]!
+                    commit.email = author["email"]!
+                    commit.description = item["message"] as! String
+                    
+                    self.commits.append(commit)
+                }
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
+            else{
+                let alert = UIAlertController(title: "Error", message: "Could not load data", preferredStyle: .alert)
+                let action = UIAlertAction(title: "Close", style: UIAlertAction.Style.cancel, handler: nil)
+                alert.addAction(action)
+                DispatchQueue.main.async {
+                    self.present(alert, animated: true, completion: nil)
+                }
+            }
         }
     }
     

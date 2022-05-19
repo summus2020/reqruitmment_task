@@ -157,7 +157,7 @@ class FirstViewController: UIViewController, UITableViewDataSource, UITableViewD
         let escapedString = newString.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
         let urlString = loader.baseURL_search + escapedString! + loader.endURL_search
         
-        loader.fetchRepoListData(urlString: urlString) { (dict, err) in
+        loader.fetchRepoData(urlString: urlString) { (dict, err) in
             if dict != nil{
                 let total = dict!["total_count"] as! Int
                 if total == 0{
